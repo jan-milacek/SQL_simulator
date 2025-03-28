@@ -112,29 +112,11 @@ if data_source == "Upload CSV" and uploaded_file is not None or data_source == "
     # SQL query section
     st.header("SQL Query")
     
-    # Provide some example queries based on data type
+    # Default query based on table type
     if table_name == "iot_sensor_data":
-        examples = {
-            "Select all data": f"SELECT * FROM {table_name}",
-            "Group by device": f"SELECT device_id, sensor_type, AVG(value) as avg_value FROM {table_name} GROUP BY device_id, sensor_type",
-            "Filter by sensor type": f"SELECT * FROM {table_name} WHERE sensor_type = 'temperature'",
-            "Time-based analysis": f"SELECT strftime('%H:%M', timestamp) as time, AVG(value) as avg_value FROM {table_name} WHERE sensor_type = 'humidity' GROUP BY time",
-            "Compare devices": f"SELECT device_id, MAX(value) as max_temp FROM {table_name} WHERE sensor_type = 'temperature' GROUP BY device_id ORDER BY max_temp DESC"
-        }
-    else:
-        examples = {
-            "Select all data": f"SELECT * FROM {table_name}",
-            "Group by category": f"SELECT category, SUM(revenue) as total_revenue FROM {table_name} GROUP BY category ORDER BY total_revenue DESC",
-            "Filter by date": f"SELECT * FROM {table_name} WHERE date >= '2023-01-05'",
-            "Calculate average": f"SELECT product, AVG(price) as avg_price FROM {table_name} GROUP BY product"
-        }
-    
-    selected_example = st.selectbox("Example queries", ["Custom"] + list(examples.keys()))
-    
-    if selected_example == "Custom":
         default_query = f"SELECT * FROM {table_name} LIMIT 10"
     else:
-        default_query = examples[selected_example]
+        default_query = f"SELECT * FROM {table_name} LIMIT 10"
     
     query = st.text_area("Enter your SQL query", value=default_query, height=150)
     
@@ -186,12 +168,6 @@ else:
     4. Enter an SQL query or select from example queries
     5. Click "Run Query" to execute
     6. View results and download as CSV if needed
-    
-    **Example Queries You Can Run:**
-    - Basic select: `SELECT * FROM table_name LIMIT 10`
-    - Filtering: `SELECT * FROM table_name WHERE column_name > value`
-    - Grouping: `SELECT column1, SUM(column2) FROM table_name GROUP BY column1`
-    - Sorting: `SELECT * FROM table_name ORDER BY column_name DESC`
     
     The app creates a temporary SQLite database in memory with your CSV data.
     """)
