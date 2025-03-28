@@ -2,7 +2,7 @@
 
 A Streamlit application that allows users to run SQL queries on CSV data sources. This tool is perfect for data analysts, students learning SQL, and developers who want to quickly test SQL queries against CSV files without setting up a database.
 
-![SQL Query Simulator Screenshot](https://via.placeholder.com/800x450?text=SQL+Query+Simulator)
+![SQL Query Simulator Screenshot](https://raw.githubusercontent.com/jan-milacek/SQL_simulator/main/sql_simulator_screenshot.png)
 
 ## Features
 
@@ -74,27 +74,7 @@ streamlit run app.py
 
 6. Click "Run Query" to execute and view results
 
-## Example Queries
 
-### For Sales Data:
-
-```sql
--- Get total revenue by category
-SELECT category, SUM(revenue) as total_revenue 
-FROM sample_sales 
-GROUP BY category 
-ORDER BY total_revenue DESC
-```
-
-### For IoT Sensor Data:
-
-```sql
--- Get average temperature by device
-SELECT device_id, AVG(value) as avg_temperature 
-FROM iot_sensor_data 
-WHERE sensor_type = 'temperature' 
-GROUP BY device_id
-```
 
 ## Customization
 
