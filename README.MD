@@ -2,7 +2,7 @@
 
 A Streamlit application that allows users to run SQL queries on CSV data sources. This tool is perfect for data analysts, students learning SQL, and developers who want to quickly test SQL queries against CSV files without setting up a database.
 
-![SQL Query Simulator Screenshot](https://raw.githubusercontent.com/jan-milacek/SQL_simulator/main/sql_simulator_screenshot.png)
+![SQL Query Simulator Screenshot](https://raw.githubusercontent.com/jan-milacek/SQL_simulator/master/sql_simulator_screenshot.png)
 
 ## Features
 
@@ -37,8 +37,8 @@ A Streamlit application that allows users to run SQL queries on CSV data sources
 1. Clone this repository or download the source code:
 
 ```bash
-git clone https://github.com/jan-milacek/sql-query-simulator.git
-cd sql-query-simulator
+git clone https://github.com/jan-milacek/SQL_simulator.git
+cd SQL_simulator
 ```
 
 2. Install the required packages:
