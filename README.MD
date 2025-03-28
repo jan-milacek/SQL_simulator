@@ -2,6 +2,11 @@
 
 A Streamlit application that allows users to run SQL queries on CSV data sources. This tool is perfect for data analysts, students learning SQL, and developers who want to quickly test SQL queries against CSV files without setting up a database.
 
+## Try It Online
+
+You can try the SQL Query Simulator online without installation:
+[https://iot-sql-simulator.streamlit.app/](https://iot-sql-simulator.streamlit.app/)
+
 ![SQL Query Simulator Screenshot](https://raw.githubusercontent.com/jan-milacek/SQL_simulator/master/sql_simulator_screenshot.png)
 
 ## Features
