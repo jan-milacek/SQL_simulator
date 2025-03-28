@@ -38,11 +38,24 @@ if data_source == "Upload CSV" and uploaded_file is not None or data_source == "
         table_name = os.path.splitext(uploaded_file.name)[0]
     elif data_source == "URL to CSV" and csv_url:
         try:
-            # Read CSV from URL
-            df = pd.read_csv(csv_url)
+            # Convert GitHub URL to raw if needed
+            if "github.com" in csv_url and "/blob/" in csv_url:
+                raw_url = csv_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+                st.info(f"Converting to raw GitHub URL: {raw_url}")
+                csv_url = raw_url
+                
+            # Read CSV from URL with error handling
+            try:
+                df = pd.read_csv(csv_url, error_bad_lines=False, warn_bad_lines=True)
+            except:
+                # For newer pandas versions (the parameter was renamed)
+                df = pd.read_csv(csv_url, on_bad_lines='skip')
+                
             table_name = "url_data"
+            st.success(f"Successfully loaded data with {len(df)} rows and {len(df.columns)} columns")
         except Exception as e:
             st.error(f"Error loading CSV from URL: {e}")
+            st.error("Tips: For GitHub files, use the 'Raw' button on GitHub and copy that URL instead.")
             st.stop()
     else:
         # Create sample data based on selection
