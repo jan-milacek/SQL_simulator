@@ -3,6 +3,7 @@ import pandas as pd
 import sqlite3
 from io import StringIO
 import os
+import re
 
 # Set page configuration
 st.set_page_config(
@@ -35,7 +36,13 @@ if data_source == "Upload CSV" and uploaded_file is not None or data_source == "
     if data_source == "Upload CSV" and uploaded_file is not None:
         # Read the uploaded CSV file
         df = pd.read_csv(uploaded_file)
-        table_name = os.path.splitext(uploaded_file.name)[0]
+        # Get the filename without extension
+        filename = os.path.splitext(uploaded_file.name)[0]
+        # Remove XX_ prefix pattern if it exists (where XX is a number)
+        if re.match(r'^\d+_', filename):
+            filename = re.sub(r'^\d+_', '', filename)
+        # Sanitize for SQL table name
+        table_name = re.sub(r'[^a-zA-Z0-9_]', '_', filename)
     elif data_source == "URL to CSV" and csv_url:
         try:
             # Convert GitHub URL to raw if needed
@@ -50,9 +57,20 @@ if data_source == "Upload CSV" and uploaded_file is not None or data_source == "
             except:
                 # For newer pandas versions (the parameter was renamed)
                 df = pd.read_csv(csv_url, on_bad_lines='skip')
-                
-            table_name = "url_data"
+            
+            # Extract filename from URL 
+            url_parts = csv_url.split('/')
+            csv_filename = url_parts[-1]
+            # Get filename without extension
+            filename = os.path.splitext(csv_filename)[0]
+            # Remove XX_ prefix pattern if it exists (where XX is a number)
+            if re.match(r'^\d+_', filename):
+                filename = re.sub(r'^\d+_', '', filename)
+            # Sanitize for SQL table name
+            table_name = re.sub(r'[^a-zA-Z0-9_]', '_', filename)
+            
             st.success(f"Successfully loaded data with {len(df)} rows and {len(df.columns)} columns")
+            st.info(f"Table name in SQL: {table_name}")
         except Exception as e:
             st.error(f"Error loading CSV from URL: {e}")
             st.error("Tips: For GitHub files, use the 'Raw' button on GitHub and copy that URL instead.")
@@ -126,42 +144,43 @@ if data_source == "Upload CSV" and uploaded_file is not None or data_source == "
     st.header("SQL Query")
     
     # Default query based on table type
-    if table_name == "iot_sensor_data":
-        default_query = f"SELECT * FROM {table_name} LIMIT 10"
-    else:
-        default_query = f"SELECT * FROM {table_name} LIMIT 10"
+    default_query = f"SELECT * FROM {table_name} LIMIT 10;"
     
     query = st.text_area("Enter your SQL query", value=default_query, height=150)
+    st.info("Make sure your query ends with a semicolon (;)")
     
     # Execute the query
     if st.button("Run Query"):
         try:
-            query_result = pd.read_sql_query(query, conn)
-            
-            # Display query results
-            st.header("Query Results")
-            st.dataframe(query_result)
-            
-            # Download results button
-            csv = query_result.to_csv(index=False)
-            st.download_button(
-                label="Download results as CSV",
-                data=csv,
-                file_name="query_results.csv",
-                mime="text/csv"
-            )
-            
-            # Show some statistics about the results
-            st.header("Result Statistics")
-            st.write(f"Number of rows: {len(query_result)}")
-            st.write(f"Number of columns: {len(query_result.columns)}")
-            
-            # For numerical columns, show basic statistics
-            numeric_cols = query_result.select_dtypes(include=['number']).columns
-            if len(numeric_cols) > 0:
-                st.subheader("Numerical Column Statistics")
-                st.dataframe(query_result[numeric_cols].describe())
-            
+            # Check if the query ends with a semicolon
+            if not query.strip().endswith(';'):
+                st.error("Query must end with a semicolon (;)")
+            else:
+                query_result = pd.read_sql_query(query.strip(), conn)
+                
+                # Display query results
+                st.header("Query Results")
+                st.dataframe(query_result)
+                
+                # Download results button
+                csv = query_result.to_csv(index=False)
+                st.download_button(
+                    label="Download results as CSV",
+                    data=csv,
+                    file_name="query_results.csv",
+                    mime="text/csv"
+                )
+                
+                # Show some statistics about the results
+                st.header("Result Statistics")
+                st.write(f"Number of rows: {len(query_result)}")
+                st.write(f"Number of columns: {len(query_result.columns)}")
+                
+                # For numerical columns, show basic statistics
+                numeric_cols = query_result.select_dtypes(include=['number']).columns
+                if len(numeric_cols) > 0:
+                    st.subheader("Numerical Column Statistics")
+                    st.dataframe(query_result[numeric_cols].describe())
         except Exception as e:
             st.error(f"Error executing query: {e}")
     
@@ -179,8 +198,9 @@ else:
     2. Alternatively, check "Use sample data" to test with example data
     3. Review the data preview and schema
     4. Enter an SQL query or select from example queries
-    5. Click "Run Query" to execute
-    6. View results and download as CSV if needed
+    5. Make sure your query ends with a semicolon (;)
+    6. Click "Run Query" to execute
+    7. View results and download as CSV if needed
     
     The app creates a temporary SQLite database in memory with your CSV data.
     """)
