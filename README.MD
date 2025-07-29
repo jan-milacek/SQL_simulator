@@ -82,6 +82,7 @@ pip install -r requirements.txt
 ```bash
 streamlit run app.py
 ```
+- Streamlit will automatically open your browser to `http://localhost:8501`
 - Upload CSV files or use sample data
 - Write SQL queries across multiple tables
 - Execute and download results
@@ -90,6 +91,7 @@ streamlit run app.py
 ```bash
 streamlit run app_visualization.py
 ```
+- Streamlit will automatically open your browser to `http://localhost:8501`
 - Upload IoT sensor datasets (sensors + measurements)
 - Perform SQL analysis with visualization
 - Create interactive dashboards
