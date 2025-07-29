@@ -239,11 +239,6 @@ For questions about educational use or technical implementation:
 - Contact: jan.milacek@gmail.com
 - Check the Wiki for common solutions
 
-## 🔗 Related Projects
-
-- [MQTT IoT Simulator](../mqtt_dashboard) - Companion tool for real-time sensor data simulation
-- [Course Materials](../course-materials) - Complete 9-week curriculum resources
-
 ## 📜 License
 
 MIT License - Feel free to use, modify, and distribute for educational purposes.
